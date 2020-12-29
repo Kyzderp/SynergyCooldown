@@ -1,0 +1,12 @@
+## Title: SynergyCooldown
+## Author: Kyzeragon
+## Version: 0.0.1
+## APIVersion: 100033
+
+## OptionalDependsOn: pChat
+
+## SavedVariables: SynergyCooldownSavedVariables
+
+src/init.lua
+src/core.lua
+ui.xml
