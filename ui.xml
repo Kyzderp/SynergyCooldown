@@ -13,12 +13,10 @@
                 <Label name="$(parent)Label" font="$(BOLD_FONT)|$(KB_14)|soft-shadow-thick" color="FFFFFF" text="Sanguine Burst" verticalAlignment="BOTTOM" horizontalAlignment="LEFT" hidden="false">
                     <Dimensions x="600" y="36"/>
                     <Anchor point="BOTTOMLEFT" relativeTo="$(parent)Backdrop" relativePoint="RIGHT" offsetX="8"/>
-                    <!-- <Controls> <Backdrop name="$(parent)Backdrop" centerColor="00000000" edgeColor="FF000000" hidden="false"> <AnchorFill/> <Edge edgeSize="2"/> </Backdrop> </Controls> -->
                 </Label>
                 <Label name="$(parent)Timer" font="$(BOLD_FONT)|$(KB_14)|outline" color="FFFFFF" text="20.0" verticalAlignment="BOTTOM" horizontalAlignment="CENTER" hidden="false" tier="HIGH">
                     <Dimensions x="32" y="32"/>
                     <Anchor point="CENTER" relativeTo="$(parent)Icon" relativePoint="CENTER"/>
-                    <!-- <Controls> <Backdrop name="$(parent)Backdrop" centerColor="00000000" edgeColor="FF000000" hidden="false"> <AnchorFill/> <Edge edgeSize="2"/> </Backdrop> </Controls> -->
                 </Label>
                 <StatusBar name="$(parent)Bar" hidden="false" inherits="ZO_ArrowStatusBarWithBG">
                     <Dimensions x="120"/>
@@ -34,7 +32,6 @@
             <Dimensions x="40" y="40"/>
             <Anchor point="CENTER" relativeTo="GuiRoot" relativePoint="CENTER" offsetX="0" offsetY="0"/>
             <OnMoveStop>SynergyCooldown:SavePosition()</OnMoveStop>
-            <!-- <OnInitialized>CreateControlFromVirtual("$(parent)Line", self, "SynCool_Line_Template", "")</OnInitialized> -->
             <Controls>
                 <Backdrop name="$(parent)Backdrop" centerColor="75000000" edgeColor="88000000" hidden="true">
                     <AnchorFill/>
