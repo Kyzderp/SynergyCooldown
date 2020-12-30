@@ -26,7 +26,7 @@ local synergies = {
         ids = {108782, 108787},
         texture = "esoui/art/icons/ability_undaunted_001_b.dds",
     },
-    ["Trapping Webs"] = {
+    ["Spooder"] = {
         ids = {108788, 108791, 108792},
         texture = "esoui/art/icons/ability_undaunted_003_b.dds",
     },
@@ -58,11 +58,11 @@ local synergies = {
         ids = {108814},
         texture = "esoui/art/icons/ability_nightblade_018.dds",
     },
-    ["Unnerving Boneyard"] = {
+    ["Grave Robber"] = {
         ids = {125219},
         texture = "esoui/art/icons/ability_necromancer_004.dds",
     },
-    ["Agony Totem"] = {
+    ["Pure Agony"] = {
         ids = {125220},
         texture = "esoui/art/icons/ability_necromancer_010_b.dds",
     },
@@ -70,7 +70,7 @@ local synergies = {
         ids = {58775},
         texture = "esoui/art/icons/ability_werewolf_005_b.dds",
     },
-    ["Sanguine Burst"] = {
+    ["Lady Thorn"] = {
         ids = {142318},
         texture = "esoui/art/icons/ability_u23_bloodball_chokeonit.dds",
     },
@@ -81,6 +81,20 @@ local isPolling = false
 
 -- Currently unused controls for notifications: {[1] = {name = name, expireTime = 123456132}}
 local freeControls = {}
+
+-------------------------------------------------------------------------------
+-- Reanchor all controls, used when growth direction changes
+function SynCool.ReAnchor()
+    for i, data in pairs(freeControls) do
+        local lineControl = SynCoolContainer:GetNamedChild("Line" .. tostring(i))
+
+        if (SynCool.savedOptions.display.growth == "up") then
+            lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, -44 * (i - 1))
+        elseif (SynCool.savedOptions.display.growth == "down") then
+            lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, 44 * (i - 1))
+        end
+    end
+end
 
 -------------------------------------------------------------------------------
 -- Polling to update display
@@ -149,7 +163,12 @@ local function FindOrCreateControl()
         SynCoolContainer,                       -- parent
         "SynCool_Line_Template",                -- template
         "")                                     -- suffix
-    lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, -44 * (index - 1))
+
+    if (SynCool.savedOptions.display.growth == "up") then
+        lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, -44 * (index - 1))
+    else
+        lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, 44 * (index - 1))
+    end
 
     return index
 end
@@ -176,6 +195,7 @@ local function OnSynergyActivated(name)
         isPolling = true
     end
 end
+SynCool.OnSynergyActivated = OnSynergyActivated
 
 
 -------------------------------------------------------------------------------

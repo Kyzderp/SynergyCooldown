@@ -7,13 +7,16 @@ local defaultOptions = {
     display = {
         x = GuiRoot:GetWidth() / 5,
         y = 0,
+        growth = "up", -- "down"
     },
+    debug = false,
 }
 
 ---------------------------------------------------------------------
 -- Collect messages for displaying later when addon is not fully loaded
 SynCool.messages = {}
 function SynCool.dbg(msg)
+    if (not SynCool.savedOptions.debug) then return end
     if (not msg) then return end
     if (CHAT_SYSTEM.primaryContainer) then
         d("|c66FF66[SC]|r " .. tostring(msg))
@@ -45,7 +48,6 @@ end
 ---------------------------------------------------------------------
 -- Initialize
 local function Initialize()
-    SynCool.dbg("Initializing...")
     SynCool.savedOptions = ZO_SavedVars:NewAccountWide("SynergyCooldownSavedVariables", 1, "Options", defaultOptions)
     -- TODO: create settings menu
 
@@ -61,6 +63,25 @@ local function Initialize()
         SynCoolContainer:SetMouseEnabled(false)
         SynCoolContainer:SetMovable(false)
         SynCoolContainerBackdrop:SetHidden(true)
+    end
+
+    SLASH_COMMANDS["/scgrowth"] = function(arg)
+        if (arg ~= "up" and arg ~= "down") then
+            d("Usage: /scgrowth up OR /scgrowth down")
+            return
+        end
+        SynCool.savedOptions.display.growth = arg
+        SynCool.ReAnchor()
+    end
+
+    SLASH_COMMANDS["/sctest"] = function()
+        local toActivate = {"Shard/Orb", "Blood Altar", "Ritual", "Conduit"}
+        for i, name in ipairs(toActivate) do
+            EVENT_MANAGER:RegisterForUpdate(SynCool.name .. "Test" .. name, (i - 1) * 1000, function()
+                    SynCool.OnSynergyActivated(name)
+                    EVENT_MANAGER:UnregisterForUpdate(SynCool.name .. "Test" .. name)
+                end)
+        end
     end
 
     SynCool:InitializeCore()
