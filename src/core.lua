@@ -74,12 +74,16 @@ local synergies = {
         ids = {142318},
         texture = "esoui/art/icons/ability_u23_bloodball_chokeonit.dds",
     },
+    ["Icy Escape"] = {
+        ids = {88892},
+        texture = "esoui/art/icons/ability_warden_005_b.dds",
+    },
 }
 
 
 local isPolling = false
 
--- Currently unused controls for notifications: {[1] = {name = name, expireTime = 123456132}}
+-- Currently used controls for notifications: {[1] = {name = name, expireTime = 123456132}}
 local freeControls = {}
 
 -------------------------------------------------------------------------------
@@ -149,7 +153,15 @@ end
 
 -------------------------------------------------------------------------------
 -- Find a free control to use
-local function FindOrCreateControl()
+local function FindOrCreateControl(name)
+    -- Do a first pass to check if there's already one being displayed for this name
+    for i, data in pairs(freeControls) do
+        if (data and data.name == name) then
+            return i
+        end
+    end
+
+    -- No existing one of the same name
     for i, data in pairs(freeControls) do
         if (data == false) then
             return i
@@ -179,7 +191,7 @@ end
 local function OnSynergyActivated(name)
     SynCool.dbg("Activated " .. name)
 
-    local index = FindOrCreateControl()
+    local index = FindOrCreateControl(name)
     freeControls[index] = {name = name, expireTime = GetGameTimeMilliseconds() + 20000}
 
     local lineControl = SynCoolContainer:GetNamedChild("Line" .. tostring(index))

@@ -21,9 +21,10 @@
                 <StatusBar name="$(parent)Bar" hidden="false" inherits="ZO_ArrowStatusBarWithBG">
                     <Dimensions x="120"/>
                     <Anchor point="TOPLEFT" relativeTo="$(parent)Backdrop" relativePoint="RIGHT" offsetX="4"/>
-                    <OnInitialized>ZO_StatusBar_SetGradientColor(self, ZO_XP_BAR_GRADIENT_COLORS)</OnInitialized>
-                    <OnValueChanged /> <!-- For some reason, not overriding this to be empty gives nil errors? I must be doing something wrong -->
-                    <OnMinMaxValueChanged />
+                    <OnInitialized>
+                        ZO_StatusBar_SetGradientColor(self, ZO_XP_BAR_GRADIENT_COLORS)
+                        self.gloss = self:GetNamedChild("Gloss")
+                    </OnInitialized>
                 </StatusBar>
             </Controls>
         </Control>

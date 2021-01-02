@@ -1,6 +1,6 @@
 ## Title: SynergyCooldown
 ## Author: Kyzeragon
-## Version: 0.0.1
+## Version: 0.1.0
 ## APIVersion: 100033
 
 ## SavedVariables: SynergyCooldownSavedVariables
