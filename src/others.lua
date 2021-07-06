@@ -205,7 +205,7 @@ local function FindOrCreateControl(name)
         "SynCool_Line_Template",                -- template
         "")                                     -- suffix
 
-    if (SynCool.savedOptions.display.growth == "up") then
+    if (SynCool.savedOptions.othersDisplay.growth == "up") then
         lineControl:SetAnchor(CENTER, SynCoolOthers, CENTER, 0, -44 * (index - 1))
     else
         lineControl:SetAnchor(CENTER, SynCoolOthers, CENTER, 0, 44 * (index - 1))
@@ -217,13 +217,16 @@ end
 
 -------------------------------------------------------------------------------
 -- When a synergy is activated, add it to the display
-local function OnSynergyActivated(name, target)
+local function OnSynergyActivated(name, target, bypass)
+    if (not SynCool.savedOptions.othersDisplay.enabled) then
+        return
+    end
+
     if (target == nil) then
         return
     end
-    -- SynCool.dbg(target .. " activated " .. name)
 
-    if (useWatch and not watched[target]) then
+    if (not bypass and useWatch and not watched[target]) then
         return
     end
 

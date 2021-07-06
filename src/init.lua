@@ -1,22 +1,23 @@
 SynergyCooldown = SynergyCooldown or {}
 local SynCool = SynergyCooldown
 SynCool.name = "SynergyCooldown"
-SynCool.version = "0.1.0"
+SynCool.version = "0.2.0"
 
 local defaultOptions = {
     display = {
         x = GuiRoot:GetWidth() / 5,
         y = 0,
-        growth = "up", -- "down"
+        growth = "down", -- "up"
     },
     othersDisplay = {
         x = GuiRoot:GetWidth() * 2 / 5,
         y = 0,
-        growth = "up", -- "down"
-        enabled = true,
+        growth = "down", -- "up"
+        enabled = false,
     },
     debug = false,
 }
+SynCool.unlocked = false
 
 ---------------------------------------------------------------------
 -- Collect messages for displaying later when addon is not fully loaded
@@ -63,12 +64,14 @@ end
 -- Initialize
 local function Initialize()
     SynCool.savedOptions = ZO_SavedVars:NewAccountWide("SynergyCooldownSavedVariables", 1, "Options", defaultOptions)
-    -- TODO: create settings menu
+
+    SynCool.CreateSettingsMenu()
 
     SynCoolContainer:SetAnchor(CENTER, GuiRoot, CENTER, SynCool.savedOptions.display.x, SynCool.savedOptions.display.y)
     SynCoolOthers:SetAnchor(CENTER, GuiRoot, CENTER, SynCool.savedOptions.othersDisplay.x, SynCool.savedOptions.othersDisplay.y)
 
     SLASH_COMMANDS["/scunlock"] = function()
+        SynCool.unlocked = true
         SynCoolContainer:SetMouseEnabled(true)
         SynCoolContainer:SetMovable(true)
         SynCoolContainerBackdrop:SetHidden(false)
@@ -79,6 +82,7 @@ local function Initialize()
     end
 
     SLASH_COMMANDS["/sclock"] = function()
+        SynCool.unlocked = false
         SynCoolContainer:SetMouseEnabled(false)
         SynCoolContainer:SetMovable(false)
         SynCoolContainerBackdrop:SetHidden(true)
@@ -88,39 +92,7 @@ local function Initialize()
         SynCoolOthersBackdrop:SetHidden(true)
     end
 
-    SLASH_COMMANDS["/scgrowth"] = function(arg)
-        if (arg ~= "up" and arg ~= "down") then
-            d("Usage: /scgrowth up OR /scgrowth down")
-            return
-        end
-        SynCool.savedOptions.display.growth = arg
-        SynCool.ReAnchor()
-    end
-
-    SLASH_COMMANDS["/scothersgrowth"] = function(arg)
-        if (arg ~= "up" and arg ~= "down") then
-            d("Usage: /scothersgrowth up OR /scothersgrowth down")
-            return
-        end
-        SynCool.savedOptions.othersDisplay.growth = arg
-        SynCool.ReAnchor()
-    end
-
-    SLASH_COMMANDS["/scdebug"] = function(arg)
-        SynCool.savedOptions.debug = not SynCool.savedOptions.debug
-        d(string.format("Debug: %s", SynCool.savedOptions.debug and "on" or "off"))
-    end
-
-    SLASH_COMMANDS["/sctest"] = function()
-        local toActivate = {"Shard/Orb", "Blood Altar", "Ritual", "Conduit", "Shard/Orb"}
-        for i, name in ipairs(toActivate) do
-            EVENT_MANAGER:RegisterForUpdate(SynCool.name .. "Test" .. tostring(i), (i - 1) * 1000, function()
-                    SynCool.OnSynergyActivated(name)
-                    SynCool.OnSynergyOthers(name, "@Kyzeragon")
-                    EVENT_MANAGER:UnregisterForUpdate(SynCool.name .. "Test" .. tostring(i))
-                end)
-        end
-    end
+    SLASH_COMMANDS["/sctest"] = SynCool.Test
 
     SLASH_COMMANDS["/scwatch"] = function(arg)
         if (arg == "") then
@@ -132,6 +104,17 @@ local function Initialize()
 
     SynCool:InitializeCore()
     EVENT_MANAGER:RegisterForEvent(SynCool.name, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
+end
+
+function SynCool.Test()
+    local toActivate = {"Shard/Orb", "Blood Altar", "Ritual", "Conduit", "Shard/Orb"}
+    for i, name in ipairs(toActivate) do
+        EVENT_MANAGER:RegisterForUpdate(SynCool.name .. "Test" .. tostring(i), (i - 1) * 1000, function()
+                SynCool.OnSynergyActivated(name)
+                SynCool.OnSynergyOthers(name, "@Kyzeragon", true)
+                EVENT_MANAGER:UnregisterForUpdate(SynCool.name .. "Test" .. tostring(i))
+            end)
+    end
 end
 
 ---------------------------------------------------------------------

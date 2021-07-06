@@ -1,11 +1,13 @@
 ## Title: SynergyCooldown
 ## Author: Kyzeragon
-## Version: 0.1.0
-## APIVersion: 100033
+## Version: 0.2.0
+## APIVersion: 100035
+## DependsOn: LibAddonMenu-2.0>=31
 
 ## SavedVariables: SynergyCooldownSavedVariables
 
 src/init.lua
+src/settings.lua
 src/core.lua
 src/others.lua
 ui.xml
