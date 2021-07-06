@@ -56,7 +56,6 @@ local function OnPlayerActivated(_, initial)
     end
     SynCool.messages = {}
 
-    SynCool.CheckTanks()
     SynCool.ClearCache()
 end
 
@@ -95,11 +94,7 @@ local function Initialize()
     SLASH_COMMANDS["/sctest"] = SynCool.Test
 
     SLASH_COMMANDS["/scwatch"] = function(arg)
-        if (arg == "") then
-            SynCool.CheckTanks()
-        else
-            SynCool.Watch(arg)
-        end
+        SynCool.Watch(arg)
     end
 
     SynCool:InitializeCore()
@@ -111,7 +106,7 @@ function SynCool.Test()
     for i, name in ipairs(toActivate) do
         EVENT_MANAGER:RegisterForUpdate(SynCool.name .. "Test" .. tostring(i), (i - 1) * 1000, function()
                 SynCool.OnSynergyActivated(name)
-                SynCool.OnSynergyOthers(name, "@Kyzeragon", true)
+                SynCool.OnSynergyOthers(name, "@Kyzeragon", nil, true)
                 EVENT_MANAGER:UnregisterForUpdate(SynCool.name .. "Test" .. tostring(i))
             end)
     end

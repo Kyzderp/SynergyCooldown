@@ -81,7 +81,7 @@ function SynCool.CreateSettingsMenu()
         {
             type = "description",
             title = "|c3bdb5eOther Players' Cooldowns|r",
-            text = "You can see the synergy cooldowns of group members too. Every time you enter a new area, this will automatically evaluate to only display group members who are marked as tanks.\nIf you want to watch specific players, you can use |c99FF99/scwatch Player1 Player2|r with their @ names, but this resets upon entering every new area (on player activated).",
+            text = "You can see the synergy cooldowns of group members too, but only those marked as tanks.\nIf you want to watch specific players instead, you can use |c99FF99/scwatch @Player1 @Player2|r with their @ names, but this is not saved across reloads.",
             width = "full",
         },
         {

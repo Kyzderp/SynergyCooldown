@@ -217,7 +217,7 @@ end
 
 -------------------------------------------------------------------------------
 -- When a synergy is activated, add it to the display
-local function OnSynergyActivated(name, target, bypass)
+local function OnSynergyActivated(name, target, unitTag, bypass)
     if (not SynCool.savedOptions.othersDisplay.enabled) then
         return
     end
@@ -226,8 +226,23 @@ local function OnSynergyActivated(name, target, bypass)
         return
     end
 
-    if (not bypass and useWatch and not watched[target]) then
-        return
+    if (useWatch) then
+        -- If we're using the custom watchlist, the name must be in this list
+        if (not bypass and not watched[target]) then
+            return
+        end
+    else
+        -- If not using the custom watchlist...
+        target = GetUnitDisplayName(unitTag)
+        if (not bypass and target == GetUnitDisplayName("player")) then
+            -- Must not be the current player
+            return
+        end
+        local role = GetGroupMemberSelectedRole(unitTag);
+        if (not bypass and role ~= LFG_ROLE_TANK) then
+            -- Must be a tank
+            return
+        end
     end
 
     local index = FindOrCreateControl(name)
@@ -250,35 +265,11 @@ SynCool.OnSynergyOthers = OnSynergyActivated
 
 
 -------------------------------------------------------------------------------
--- Check who the tanks are
-function SynCool.CheckTanks()
-    local groupSize = GetGroupSize();
-    local tanks = ""
-
-    for i = 1, groupSize do
-        local unitTag = GetGroupUnitTagByIndex(i);
-        local name = GetUnitDisplayName(unitTag)
-        local role = GetGroupMemberSelectedRole(unitTag);
-
-        if (role == LFG_ROLE_TANK and name ~= GetUnitDisplayName("player")) then
-            tanks = tanks .. " " .. name
-        end
-    end
-
-    if (tanks == "") then
-        tanks = "notwatchinganyone"
-        SynCool.dbg("empty tank")
-    end
-    SynCool.Watch(tanks)
-end
-
-
--------------------------------------------------------------------------------
 -- When a synergy is activated, add it to the display
 function SynCool:InitializeOthers()
     -- Register effect changed just to get unitId : unitTag mappings
     local function OnOthersEffectChanged(_, _, _, _, unitTag, _, _, _, _, _, _, _, _, _, unitId)
-        groupMembers[unitId] = GetUnitDisplayName(unitTag)
+        groupMembers[unitId] = unitTag
     end
     EVENT_MANAGER:RegisterForEvent(SynCool.name .. "Others", EVENT_EFFECT_CHANGED, OnOthersEffectChanged)
     EVENT_MANAGER:AddFilterForEvent(SynCool.name .. "Others", EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
@@ -287,7 +278,7 @@ function SynCool:InitializeOthers()
     for name, data in pairs(synergies) do
         local function OnCombatOthersEvent(_, _, _, _, _, _, _, _, _, _, hitValue, _, _, _, _, targetUnitId)
             if (hitValue == 1) then
-                OnSynergyActivated(name, groupMembers[targetUnitId])
+                OnSynergyActivated(name, GetUnitDisplayName(groupMembers[targetUnitId]), groupMembers[targetUnitId])
             end
         end
 
