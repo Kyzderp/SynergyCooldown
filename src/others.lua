@@ -80,6 +80,11 @@ local synergies = {
     },
 }
 
+-- unitId to unitTag, when to clear this? on player activated?
+local groupMembers = {}
+
+local useWatch = false
+local watched = {}
 
 local isPolling = false
 
@@ -87,18 +92,41 @@ local isPolling = false
 local freeControls = {}
 
 -------------------------------------------------------------------------------
--- Reanchor all controls, used when growth direction changes
-function SynCool.ReAnchor()
-    for i, data in pairs(freeControls) do
-        local lineControl = SynCoolContainer:GetNamedChild("Line" .. tostring(i))
+-- Reset the unitId:unitTag cache
+function SynCool.ClearCache()
+    SynCool.dbg("Clearing group member cache")
+    groupMembers = {}
+end
 
-        if (SynCool.savedOptions.display.growth == "up") then
-            lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, -44 * (i - 1))
-        elseif (SynCool.savedOptions.display.growth == "down") then
-            lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, 44 * (i - 1))
+-------------------------------------------------------------------------------
+-- Watch only certain names
+function SynCool.Watch(names)
+    if (names == nil or names == "") then
+        useWatch = false
+        watched = {}
+        SynCool.dbg("Cleared and turned off individual player filter")
+        return
+    end
+
+    useWatch = true
+    for name in names:gmatch("%S+") do
+        watched[name] = true
+    end
+    SynCool.dbg("Watching" .. names)
+end
+
+-------------------------------------------------------------------------------
+-- Reanchor all controls, used when growth direction changes
+function SynCool.ReAnchorOthers()
+    for i, data in pairs(freeControls) do
+        local lineControl = SynCoolOthers:GetNamedChild("Line" .. tostring(i))
+
+        if (SynCool.savedOptions.othersDisplay.growth == "up") then
+            lineControl:SetAnchor(CENTER, SynCoolOthers, CENTER, 0, -44 * (i - 1))
+        elseif (SynCool.savedOptions.othersDisplay.growth == "down") then
+            lineControl:SetAnchor(CENTER, SynCoolOthers, CENTER, 0, 44 * (i - 1))
         end
     end
-    SynCool.ReAnchorOthers()
 end
 
 -------------------------------------------------------------------------------
@@ -110,7 +138,7 @@ local function UpdateDisplay()
     for i, data in pairs(freeControls) do
         if (data and data.expireTime) then
             local millisRemaining = (data.expireTime - currTime)
-            local lineControl = SynCoolContainer:GetNamedChild("Line" .. tostring(i))
+            local lineControl = SynCoolOthers:GetNamedChild("Line" .. tostring(i))
             if (millisRemaining < 0) then
                 -- Hide
                 lineControl:SetHidden(true)
@@ -132,8 +160,8 @@ local function UpdateDisplay()
             freeControls[i] = freeControls[i + numRemoved]
             freeControls[i + numRemoved] = false
 
-            local newControl = SynCoolContainer:GetNamedChild("Line" .. tostring(i))
-            local origControl = SynCoolContainer:GetNamedChild("Line" .. tostring(i + numRemoved))
+            local newControl = SynCoolOthers:GetNamedChild("Line" .. tostring(i))
+            local origControl = SynCoolOthers:GetNamedChild("Line" .. tostring(i + numRemoved))
             newControl:GetNamedChild("Icon"):SetTexture(origControl:GetNamedChild("Icon"):GetTextureFileName())
             newControl:GetNamedChild("Label"):SetText(origControl:GetNamedChild("Label"):GetText())
             newControl:GetNamedChild("Timer"):SetText(origControl:GetNamedChild("Timer"):GetText())
@@ -146,7 +174,7 @@ local function UpdateDisplay()
 
     -- Stop polling
     if (numActive == 0) then
-        EVENT_MANAGER:UnregisterForUpdate(SynCool.name .. "Poll")
+        EVENT_MANAGER:UnregisterForUpdate(SynCool.name .. "PollOthers")
         isPolling = false
     end
 end
@@ -156,11 +184,11 @@ end
 -- Find a free control to use
 local function FindOrCreateControl(name)
     -- Do a first pass to check if there's already one being displayed for this name
-    for i, data in pairs(freeControls) do
-        if (data and data.name == name) then
-            return i
-        end
-    end
+    -- for i, data in pairs(freeControls) do
+    --     if (data and data.name == name) then
+    --         return i
+    --     end
+    -- end
 
     -- No existing one of the same name
     for i, data in pairs(freeControls) do
@@ -173,14 +201,14 @@ local function FindOrCreateControl(name)
     local index = #freeControls + 1
     local lineControl = CreateControlFromVirtual(
         "$(parent)Line" .. tostring(index),     -- name
-        SynCoolContainer,                       -- parent
+        SynCoolOthers,                          -- parent
         "SynCool_Line_Template",                -- template
         "")                                     -- suffix
 
     if (SynCool.savedOptions.display.growth == "up") then
-        lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, -44 * (index - 1))
+        lineControl:SetAnchor(CENTER, SynCoolOthers, CENTER, 0, -44 * (index - 1))
     else
-        lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, 44 * (index - 1))
+        lineControl:SetAnchor(CENTER, SynCoolOthers, CENTER, 0, 44 * (index - 1))
     end
 
     return index
@@ -189,43 +217,81 @@ end
 
 -------------------------------------------------------------------------------
 -- When a synergy is activated, add it to the display
-local function OnSynergyActivated(name)
-    -- SynCool.dbg("Activated " .. name)
+local function OnSynergyActivated(name, target)
+    if (target == nil) then
+        return
+    end
+    -- SynCool.dbg(target .. " activated " .. name)
+
+    if (useWatch and not watched[target]) then
+        return
+    end
 
     local index = FindOrCreateControl(name)
     freeControls[index] = {name = name, expireTime = GetGameTimeMilliseconds() + 20000}
 
-    local lineControl = SynCoolContainer:GetNamedChild("Line" .. tostring(index))
+    local lineControl = SynCoolOthers:GetNamedChild("Line" .. tostring(index))
     lineControl:GetNamedChild("Icon"):SetTexture(synergies[name].texture)
-    lineControl:GetNamedChild("Label"):SetText(name)
+    lineControl:GetNamedChild("Label"):SetText(target)
     lineControl:GetNamedChild("Timer"):SetText("20.0")
     lineControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
     lineControl:GetNamedChild("Bar"):SetValue(20000)
     lineControl:SetHidden(false)
 
     if (not isPolling) then
-        EVENT_MANAGER:RegisterForUpdate(SynCool.name .. "Poll", 100, UpdateDisplay)
+        EVENT_MANAGER:RegisterForUpdate(SynCool.name .. "PollOthers", 100, UpdateDisplay)
         isPolling = true
     end
 end
-SynCool.OnSynergyActivated = OnSynergyActivated
+SynCool.OnSynergyOthers = OnSynergyActivated
+
+
+-------------------------------------------------------------------------------
+-- Check who the tanks are
+function SynCool.CheckTanks()
+    local groupSize = GetGroupSize();
+    local tanks = ""
+
+    for i = 1, groupSize do
+        local unitTag = GetGroupUnitTagByIndex(i);
+        local name = GetUnitDisplayName(unitTag)
+        local role = GetGroupMemberSelectedRole(unitTag);
+
+        if (role == LFG_ROLE_TANK and name ~= GetUnitDisplayName("player")) then
+            tanks = tanks .. " " .. name
+        end
+    end
+
+    SynCool.Watch(tanks)
+end
 
 
 -------------------------------------------------------------------------------
 -- When a synergy is activated, add it to the display
-function SynCool:InitializeCore()
+function SynCool:InitializeOthers()
+    -- Register effect changed just to get unitId : unitTag mappings
+    local function OnOthersEffectChanged(_, _, _, _, unitTag, _, _, _, _, _, _, _, _, _, unitId)
+        groupMembers[unitId] = GetUnitDisplayName(unitTag)
+    end
+    EVENT_MANAGER:RegisterForEvent(SynCool.name .. "Others", EVENT_EFFECT_CHANGED, OnOthersEffectChanged)
+    EVENT_MANAGER:AddFilterForEvent(SynCool.name .. "Others", EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
+
+    -- Register each synergy
     for name, data in pairs(synergies) do
-        local function OnCombatEvent(_, _, _, _, _, _, _, _, _, _, hitValue)
+        local function OnCombatOthersEvent(_, _, _, _, _, _, _, _, _, _, hitValue, _, _, _, _, targetUnitId)
             if (hitValue == 1) then
-                OnSynergyActivated(name)
+                OnSynergyActivated(name, groupMembers[targetUnitId])
             end
         end
+
         for _, id in ipairs(data.ids) do
-            EVENT_MANAGER:RegisterForEvent(SynCool.name .. tostring(id), EVENT_COMBAT_EVENT, OnCombatEvent)
-            EVENT_MANAGER:AddFilterForEvent(SynCool.name .. tostring(id), EVENT_COMBAT_EVENT, REGISTER_FILTER_COMBAT_RESULT, ACTION_RESULT_EFFECT_GAINED)
-            EVENT_MANAGER:AddFilterForEvent(SynCool.name .. tostring(id), EVENT_COMBAT_EVENT, REGISTER_FILTER_TARGET_COMBAT_UNIT_TYPE, COMBAT_UNIT_TYPE_PLAYER)
-            EVENT_MANAGER:AddFilterForEvent(SynCool.name .. tostring(id), EVENT_COMBAT_EVENT, REGISTER_FILTER_ABILITY_ID, id)
+            -- Others
+            EVENT_MANAGER:RegisterForEvent(SynCool.name .. "Others" .. tostring(id), EVENT_COMBAT_EVENT, OnCombatOthersEvent)
+            EVENT_MANAGER:AddFilterForEvent(SynCool.name .. "Others" .. tostring(id), EVENT_COMBAT_EVENT, REGISTER_FILTER_COMBAT_RESULT, ACTION_RESULT_EFFECT_GAINED)
+            EVENT_MANAGER:AddFilterForEvent(SynCool.name .. "Others" .. tostring(id), EVENT_COMBAT_EVENT, REGISTER_FILTER_ABILITY_ID, id)
         end
     end
-    SynCool:InitializeOthers()
+
+    -- Register changing zones or raid starting
+
 end

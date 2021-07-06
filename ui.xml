@@ -46,6 +46,24 @@
                 </Backdrop>
             </Controls>
         </TopLevelControl>
+
+        <TopLevelControl name="SynCoolOthers" clampedToScreen="true" mouseEnabled="false" movable="false" hidden="false">
+            <Dimensions x="40" y="40"/>
+            <Anchor point="CENTER" relativeTo="GuiRoot" relativePoint="CENTER" offsetX="0" offsetY="0"/>
+            <OnMoveStop>SynergyCooldown:SavePosition()</OnMoveStop>
+            <Controls>
+                <Backdrop name="$(parent)Backdrop" centerColor="75000000" edgeColor="88000000" hidden="true">
+                    <AnchorFill/>
+                    <Edge edgeSize="1"/>
+                    <Controls>
+                        <Texture name="$(parent)Alert" textureFile="esoui/art/miscellaneous/gamepad/gp_icon_new.dds" hidden="false">
+                            <Dimensions x="40" y="40"/>
+                            <Anchor point="CENTER" offsetX="0" offsetY="0"/>
+                        </Texture>
+                    </Controls>
+                </Backdrop>
+            </Controls>
+        </TopLevelControl>
         
     </Controls>
 </GuiXml>
