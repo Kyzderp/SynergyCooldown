@@ -13,6 +13,7 @@ local defaultOptions = {
         x = GuiRoot:GetWidth() * 2 / 5,
         y = 0,
         growth = "up", -- "down"
+        enabled = true,
     },
     debug = false,
 }
@@ -122,7 +123,11 @@ local function Initialize()
     end
 
     SLASH_COMMANDS["/scwatch"] = function(arg)
-        SynCool.Watch(arg)
+        if (arg == "") then
+            SynCool.CheckTanks()
+        else
+            SynCool.Watch(arg)
+        end
     end
 
     SynCool:InitializeCore()

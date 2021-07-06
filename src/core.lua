@@ -106,7 +106,9 @@ end
 local function UpdateDisplay()
     local currTime = GetGameTimeMilliseconds()
     local numActive = 0
+    local numAfterOffset = 0
     local numRemoved = 0
+    local offset = -1
     for i, data in pairs(freeControls) do
         if (data and data.expireTime) then
             local millisRemaining = (data.expireTime - currTime)
@@ -116,24 +118,33 @@ local function UpdateDisplay()
                 lineControl:SetHidden(true)
                 freeControls[i] = false
                 numRemoved = numRemoved + 1
+                if (offset == -1) then
+                    offset = i - 1
+                end
             else
-                numActive = numActive + 1
                 lineControl:GetNamedChild("Timer"):SetText(string.format("%.1f", millisRemaining / 1000))
                 lineControl:GetNamedChild("Bar"):SetValue(millisRemaining)
+                numActive = numActive + 1
+                if (offset > -1) then
+                    numAfterOffset = numAfterOffset + 1
+                end
             end
         end
     end
 
+    -- THE ONE THAT'S REMOVED IS NOT GUARANTEED TO BE THE TOPMOST!!
+    -- This can happen if topmost get refreshed before the timer ends due to bugginess
+
     -- If any were removed, the others must be shifted forward
     -- Probably more efficient way to reassign them but I'm unclear on how to not get mem leaks atm...
     if (numRemoved > 0) then
-        for i = 1, numActive do
+        for i = 1, numAfterOffset do
             -- Transfer the +numRemoved to the current
-            freeControls[i] = freeControls[i + numRemoved]
-            freeControls[i + numRemoved] = false
+            freeControls[offset + i] = freeControls[offset + i + numRemoved]
+            freeControls[offset + i + numRemoved] = false
 
-            local newControl = SynCoolContainer:GetNamedChild("Line" .. tostring(i))
-            local origControl = SynCoolContainer:GetNamedChild("Line" .. tostring(i + numRemoved))
+            local newControl = SynCoolContainer:GetNamedChild("Line" .. tostring(offset + i))
+            local origControl = SynCoolContainer:GetNamedChild("Line" .. tostring(offset + i + numRemoved))
             newControl:GetNamedChild("Icon"):SetTexture(origControl:GetNamedChild("Icon"):GetTextureFileName())
             newControl:GetNamedChild("Label"):SetText(origControl:GetNamedChild("Label"):GetText())
             newControl:GetNamedChild("Timer"):SetText(origControl:GetNamedChild("Timer"):GetText())

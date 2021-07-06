@@ -262,6 +262,10 @@ function SynCool.CheckTanks()
         end
     end
 
+    if (tanks == "") then
+        tanks = "notwatchinganyone"
+        SynCool.dbg("empty tank")
+    end
     SynCool.Watch(tanks)
 end
 
