@@ -1,7 +1,7 @@
 SynergyCooldown = SynergyCooldown or {}
 local SynCool = SynergyCooldown
 SynCool.name = "SynergyCooldown"
-SynCool.version = "0.2.2"
+SynCool.version = "0.3.0"
 
 local defaultOptions = {
     display = {
@@ -15,6 +15,7 @@ local defaultOptions = {
         growth = "down", -- "up"
         enabled = false,
     },
+    showOnlyInCombat = false,
     debug = false,
 }
 SynCool.unlocked = false
@@ -48,6 +49,19 @@ function SynCool:SavePosition()
 end
 
 ---------------------------------------------------------------------
+-- Combat state
+local function OnCombatStateChanged(_, inCombat)
+    if (SynCool.savedOptions.showOnlyInCombat and not inCombat) then
+        SynCoolContainer:SetHidden(true)
+        SynCoolOthers:SetHidden(true)
+    else
+        SynCoolContainer:SetHidden(false)
+        SynCoolOthers:SetHidden(false)
+    end
+end
+SynCool.OnCombatStateChanged = OnCombatStateChanged
+
+---------------------------------------------------------------------
 -- Post Load (player loaded)
 local function OnPlayerActivated(_, initial)
     -- Soft dependency on pChat because its chat restore will overwrite
@@ -57,6 +71,7 @@ local function OnPlayerActivated(_, initial)
     SynCool.messages = {}
 
     SynCool.ClearCache()
+    OnCombatStateChanged(_, IsUnitInCombat("player"))
 end
 
 ---------------------------------------------------------------------
@@ -99,6 +114,7 @@ local function Initialize()
 
     SynCool:InitializeCore()
     EVENT_MANAGER:RegisterForEvent(SynCool.name, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
+    EVENT_MANAGER:RegisterForEvent(SynCool.name .. "CombatState", EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
 end
 
 function SynCool.Test()

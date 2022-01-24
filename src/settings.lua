@@ -51,6 +51,18 @@ function SynCool.CreateSettingsMenu()
             width = "full",
         },
         {
+            type = "checkbox",
+            name = "Show only in combat",
+            tooltip = "Only show the cooldown timers when you are in combat, hiding them upon exiting combat. Note the Test Cooldowns will not work if this is enabled, unless you are in combat",
+            default = false,
+            getFunc = function() return SynCool.savedOptions.showOnlyInCombat end,
+            setFunc = function(value)
+                SynCool.savedOptions.showOnlyInCombat = value
+                SynCool.OnCombatStateChanged(_, IsUnitInCombat("player"))
+            end,
+            width = "full",
+        },
+        {
             type = "button",
             name = "Test Cooldowns",
             tooltip = "Show a couple example synergy cooldown progress bars",

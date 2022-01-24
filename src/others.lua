@@ -94,7 +94,7 @@ local freeControls = {}
 -------------------------------------------------------------------------------
 -- Reset the unitId:unitTag cache
 function SynCool.ClearCache()
-    SynCool.dbg("Clearing group member cache")
+    -- SynCool.dbg("Clearing group member cache")
     groupMembers = {}
 end
 
