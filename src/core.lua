@@ -78,6 +78,10 @@ local synergies = {
         ids = {88892},
         texture = "esoui/art/icons/ability_warden_005_b.dds",
     },
+    ["Gryphon's Reprisal"] = {
+        ids = {167046},
+        texture = "esoui/art/icons/achievement_trial_cr_flavor_3.dds",
+    },
 }
 
 
