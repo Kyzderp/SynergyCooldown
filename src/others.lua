@@ -1,89 +1,6 @@
 SynergyCooldown = SynergyCooldown or {}
 local SynCool = SynergyCooldown
 
-local synergies = {
-    ["Shard/Orb"] = {
-        ids = {108799, 108802, 108821, 108924},
-        texture = "esoui/art/icons/ability_undaunted_004.dds",
-    },
-    ["Conduit"] = {
-        ids = {108607},
-        texture = "esoui/art/icons/ability_sorcerer_liquid_lightning.dds",
-    },
-    ["Ritual"] = {
-        ids = {108824},
-        texture = "esoui/art/icons/ability_templar_extended_ritual.dds",
-    },
-    ["Healing Seed"] = {
-        ids = {108826},
-        texture = "esoui/art/icons/ability_warden_007.dds",
-    },
-    ["Bone Shield"] = {
-        ids = {108794, 108797},
-        texture = "esoui/art/icons/ability_undaunted_005b.dds",
-    },
-    ["Blood Altar"] = {
-        ids = {108782, 108787},
-        texture = "esoui/art/icons/ability_undaunted_001_b.dds",
-    },
-    ["Spooder"] = {
-        ids = {108788, 108791, 108792},
-        texture = "esoui/art/icons/ability_undaunted_003_b.dds",
-    },
-    ["Radiate"] = {
-        ids = {108793},
-        texture = "esoui/art/icons/ability_undaunted_002_b.dds",
-    },
-    ["Charged Lightning"] = {
-        ids = {48085},
-        texture = "esoui/art/icons/ability_sorcerer_storm_atronach.dds",
-    },
-    ["Shackle"] = {
-        ids = {108805},
-        texture = "esoui/art/icons/ability_dragonknight_006.dds",
-    },
-    ["Ignite"] = {
-        ids = {108807},
-        texture = "esoui/art/icons/ability_dragonknight_010.dds",
-    },
-    ["Gravity Crush"] = {
-        ids = {108822, 108823},
-        texture = "esoui/art/icons/ability_templar_solar_disturbance.dds",
-    },
-    ["Hidden Refresh"] = {
-        ids = {108808},
-        texture = "esoui/art/icons/ability_nightblade_015.dds",
-    },
-    ["Soul Leech"] = {
-        ids = {108814},
-        texture = "esoui/art/icons/ability_nightblade_018.dds",
-    },
-    ["Grave Robber"] = {
-        ids = {125219},
-        texture = "esoui/art/icons/ability_necromancer_004.dds",
-    },
-    ["Pure Agony"] = {
-        ids = {125220},
-        texture = "esoui/art/icons/ability_necromancer_010_b.dds",
-    },
-    ["Feeding Frenzy"] = {
-        ids = {58775},
-        texture = "esoui/art/icons/ability_werewolf_005_b.dds",
-    },
-    ["Lady Thorn"] = {
-        ids = {142318},
-        texture = "esoui/art/icons/ability_u23_bloodball_chokeonit.dds",
-    },
-    ["Icy Escape"] = {
-        ids = {88892},
-        texture = "esoui/art/icons/ability_warden_005_b.dds",
-    },
-    ["Gryphon's Reprisal"] = {
-        ids = {167046},
-        texture = "esoui/art/icons/achievement_trial_cr_flavor_3.dds",
-    },
-}
-
 -- unitId to unitTag, when to clear this? on player activated?
 local groupMembers = {}
 
@@ -253,7 +170,7 @@ local function OnSynergyActivated(name, target, unitTag, bypass)
     freeControls[index] = {name = name, expireTime = GetGameTimeMilliseconds() + 20000}
 
     local lineControl = SynCoolOthers:GetNamedChild("Line" .. tostring(index))
-    lineControl:GetNamedChild("Icon"):SetTexture(synergies[name].texture)
+    lineControl:GetNamedChild("Icon"):SetTexture(SynCool.SYNERGIES[name].texture)
     lineControl:GetNamedChild("Label"):SetText(target)
     lineControl:GetNamedChild("Timer"):SetText("20.0")
     lineControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
@@ -279,7 +196,7 @@ function SynCool:InitializeOthers()
     EVENT_MANAGER:AddFilterForEvent(SynCool.name .. "Others", EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
 
     -- Register each synergy
-    for name, data in pairs(synergies) do
+    for name, data in pairs(SynCool.SYNERGIES) do
         local function OnCombatOthersEvent(_, _, _, _, _, _, _, _, _, _, hitValue, _, _, _, _, targetUnitId)
             if (hitValue == 1) then
                 OnSynergyActivated(name, GetUnitDisplayName(groupMembers[targetUnitId]), groupMembers[targetUnitId])

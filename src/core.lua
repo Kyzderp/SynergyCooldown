@@ -1,85 +1,121 @@
 SynergyCooldown = SynergyCooldown or {}
 local SynCool = SynergyCooldown
 
-local synergies = {
+SynCool.SYNERGIES = {
     ["Shard/Orb"] = {
-        ids = {108799, 108802, 108821, 108924},
+        -- ids = {108799, 108802, 108821, 108924},
+        ids = {
+            94973, -- Trial dummy / Blessed Shards (Spear Shards)
+            95926, -- Holy Shards (Luminous Shards)
+            95040, -- Combustion
+            95042, -- Healing Combustion
+        },
         texture = "esoui/art/icons/ability_undaunted_004.dds",
     },
     ["Conduit"] = {
-        ids = {108607},
+        -- ids = {108607},
+        ids = {43769},
         texture = "esoui/art/icons/ability_sorcerer_liquid_lightning.dds",
     },
     ["Ritual"] = {
-        ids = {108824},
+        -- ids = {108824},
+        ids = {22270},
         texture = "esoui/art/icons/ability_templar_extended_ritual.dds",
     },
     ["Healing Seed"] = {
-        ids = {108826},
+        -- ids = {108826},
+        ids = {85576},
         texture = "esoui/art/icons/ability_warden_007.dds",
     },
     ["Bone Shield"] = {
-        ids = {108794, 108797},
+        -- ids = {108794, 108797},
+        ids = {
+            39424, -- Bone Wall (Bone Shield)
+            42196, -- Spinal Surge (Bone Surge)
+        },
         texture = "esoui/art/icons/ability_undaunted_005b.dds",
     },
     ["Blood Altar"] = {
-        ids = {108782, 108787},
+        -- ids = {108782, 108787},
+        ids = {
+            39519, -- Blood Funnel (Blood Altar)
+            41965, -- Blood Feast (Overflowing Altar)
+        },
         texture = "esoui/art/icons/ability_undaunted_001_b.dds",
     },
     ["Spooder"] = {
-        ids = {108788, 108791, 108792},
+        -- ids = {108788, 108791, 108792},
+        ids = {
+            39451, -- Spawn Broodling (Trapping Web)
+            41997, -- Black Widow (Shadow Silk)
+            42019, -- Arachnophobia (Tangling Web)
+        },
         texture = "esoui/art/icons/ability_undaunted_003_b.dds",
     },
     ["Radiate"] = {
-        ids = {108793},
+        -- ids = {108793},
+        ids = {41840},
         texture = "esoui/art/icons/ability_undaunted_002_b.dds",
     },
     ["Charged Lightning"] = {
-        ids = {48085},
+        ids = {48085}, -- Unchanged with SoF
         texture = "esoui/art/icons/ability_sorcerer_storm_atronach.dds",
     },
     ["Shackle"] = {
-        ids = {108805},
+        -- ids = {108805},
+        ids = {67717},
         texture = "esoui/art/icons/ability_dragonknight_006.dds",
     },
     ["Ignite"] = {
-        ids = {108807},
+        -- ids = {108807},
+        ids = {48040},
         texture = "esoui/art/icons/ability_dragonknight_010.dds",
     },
-    ["Gravity Crush"] = {
-        ids = {108822, 108823},
+    ["Nova"] = {
+        -- ids = {108822, 108823},
+        ids = {
+            48938, -- Gravity Crush
+            48939, -- Supernova
+        },
         texture = "esoui/art/icons/ability_templar_solar_disturbance.dds",
     },
     ["Hidden Refresh"] = {
-        ids = {108808},
+        -- ids = {108808},
+        ids = {37729},
         texture = "esoui/art/icons/ability_nightblade_015.dds",
     },
     ["Soul Leech"] = {
-        ids = {108814},
+        -- ids = {108814},
+        ids = {25172},
         texture = "esoui/art/icons/ability_nightblade_018.dds",
     },
     ["Grave Robber"] = {
-        ids = {125219},
+        -- ids = {125219},
+        ids = {115567},
         texture = "esoui/art/icons/ability_necromancer_004.dds",
     },
     ["Pure Agony"] = {
-        ids = {125220},
+        -- ids = {125220},
+        ids = {118610},
         texture = "esoui/art/icons/ability_necromancer_010_b.dds",
     },
     ["Feeding Frenzy"] = {
-        ids = {58775},
+        -- ids = {58775},
+        ids = {58813},
         texture = "esoui/art/icons/ability_werewolf_005_b.dds",
     },
     ["Lady Thorn"] = {
-        ids = {142318},
+        -- ids = {142318},
+        ids = {141971},
         texture = "esoui/art/icons/ability_u23_bloodball_chokeonit.dds",
     },
     ["Icy Escape"] = {
-        ids = {88892},
+        ids = {88892}, -- Unchanged with SoF
         texture = "esoui/art/icons/ability_warden_005_b.dds",
     },
     ["Gryphon's Reprisal"] = {
-        ids = {167046},
+        -- ids = {167046},
+        ids = {167042},
         texture = "esoui/art/icons/achievement_trial_cr_flavor_3.dds",
     },
 }
@@ -211,7 +247,7 @@ local function OnSynergyActivated(name)
     freeControls[index] = {name = name, expireTime = GetGameTimeMilliseconds() + 20000}
 
     local lineControl = SynCoolContainer:GetNamedChild("Line" .. tostring(index))
-    lineControl:GetNamedChild("Icon"):SetTexture(synergies[name].texture)
+    lineControl:GetNamedChild("Icon"):SetTexture(SynCool.SYNERGIES[name].texture)
     lineControl:GetNamedChild("Label"):SetText(name)
     lineControl:GetNamedChild("Timer"):SetText("20.0")
     lineControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
@@ -229,7 +265,7 @@ SynCool.OnSynergyActivated = OnSynergyActivated
 -------------------------------------------------------------------------------
 -- When a synergy is activated, add it to the display
 function SynCool:InitializeCore()
-    for name, data in pairs(synergies) do
+    for name, data in pairs(SynCool.SYNERGIES) do
         local function OnCombatEvent(_, _, _, _, _, _, _, _, _, _, hitValue)
             if (hitValue == 1) then
                 OnSynergyActivated(name)
