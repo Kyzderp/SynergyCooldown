@@ -5,11 +5,18 @@ SynCool.SYNERGIES = {
     ["Shard/Orb"] = {
         -- ids = {108799, 108802, 108821, 108924},
         ids = {
-            94973, -- Trial dummy / Blessed Shards (Spear Shards)
+            48052, -- Trial dummy / Blessed Shards
             95926, -- Holy Shards (Luminous Shards)
-            95039, -- Combustion (Mystic)
-            95040, -- Combustion (Unmorphed)
-            95042, -- Healing Combustion (Energy)
+            85434, -- Combustion (Mystic or Unmorphed)
+            63512, -- Healing Combustion (Energy)
+
+            -- A couple different IDs fire when using these synergies...
+            -- 94973, -- Trial dummy / Blessed Shards (Spear Shards) if stamina is higher
+            -- 94974, -- Trial dummy / Blessed Shards (Spear Shards) if magicka is higher
+            -- 95039, -- Combustion (Mystic or Unmorphed) if magicka is higher
+            -- 95040, -- Combustion (Mystic or Unmorphed) if stamina is higher
+            -- 95041, -- Healing Combustion (Energy) if magicka is higher
+            -- 95042, -- Healing Combustion (Energy) if stamina is higher
         },
         texture = "esoui/art/icons/ability_undaunted_004.dds",
     },
