@@ -7,8 +7,9 @@ SynCool.SYNERGIES = {
         ids = {
             94973, -- Trial dummy / Blessed Shards (Spear Shards)
             95926, -- Holy Shards (Luminous Shards)
-            95040, -- Combustion
-            95042, -- Healing Combustion
+            95039, -- Combustion (Mystic)
+            95040, -- Combustion (Unmorphed)
+            95042, -- Healing Combustion (Energy)
         },
         texture = "esoui/art/icons/ability_undaunted_004.dds",
     },

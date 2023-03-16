@@ -1,7 +1,7 @@
 SynergyCooldown = SynergyCooldown or {}
 local SynCool = SynergyCooldown
 SynCool.name = "SynergyCooldown"
-SynCool.version = "0.3.3"
+SynCool.version = "0.3.4"
 
 local defaultOptions = {
     display = {
