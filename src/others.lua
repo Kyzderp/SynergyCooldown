@@ -89,6 +89,9 @@ local function UpdateDisplay()
             newControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
             newControl:GetNamedChild("Bar"):SetValue(origControl:GetNamedChild("Bar"):GetValue())
             newControl:SetHidden(false)
+            local barHidden = not SynCool.savedOptions.othersDisplay.showBar
+            newControl:GetNamedChild("Label"):SetHidden(barHidden)
+            newControl:GetNamedChild("Bar"):SetHidden(barHidden)
             origControl:SetHidden(true)
         end
     end
@@ -176,6 +179,9 @@ local function OnSynergyActivated(name, target, unitTag, bypass)
     lineControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
     lineControl:GetNamedChild("Bar"):SetValue(20000)
     lineControl:SetHidden(false)
+    local barHidden = not SynCool.savedOptions.othersDisplay.showBar
+    lineControl:GetNamedChild("Label"):SetHidden(barHidden)
+    lineControl:GetNamedChild("Bar"):SetHidden(barHidden)
 
     if (not isPolling) then
         EVENT_MANAGER:RegisterForUpdate(SynCool.name .. "PollOthers", 100, UpdateDisplay)

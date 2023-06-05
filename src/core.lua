@@ -126,6 +126,10 @@ SynCool.SYNERGIES = {
         ids = {167042},
         texture = "esoui/art/icons/achievement_trial_cr_flavor_3.dds",
     },
+    ["Runebreak"] = {
+        ids = {191080},
+        texture = "esoui/art/icons/ability_arcanist_004.dds",
+    },
 }
 
 
@@ -199,6 +203,9 @@ local function UpdateDisplay()
             newControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
             newControl:GetNamedChild("Bar"):SetValue(origControl:GetNamedChild("Bar"):GetValue())
             newControl:SetHidden(false)
+            local barHidden = not SynCool.savedOptions.display.showBar
+            newControl:GetNamedChild("Label"):SetHidden(barHidden)
+            newControl:GetNamedChild("Bar"):SetHidden(barHidden)
             origControl:SetHidden(true)
         end
     end
@@ -263,6 +270,9 @@ local function OnSynergyActivated(name)
     lineControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
     lineControl:GetNamedChild("Bar"):SetValue(20000)
     lineControl:SetHidden(false)
+    local barHidden = not SynCool.savedOptions.display.showBar
+    lineControl:GetNamedChild("Label"):SetHidden(barHidden)
+    lineControl:GetNamedChild("Bar"):SetHidden(barHidden)
 
     if (not isPolling) then
         EVENT_MANAGER:RegisterForUpdate(SynCool.name .. "Poll", 100, UpdateDisplay)

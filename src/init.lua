@@ -9,12 +9,14 @@ local defaultOptions = {
         y = 0,
         growth = "down", -- "up"
         enabled = true,
+        showBar = true,
     },
     othersDisplay = {
         x = GuiRoot:GetWidth() * 2 / 5,
         y = 0,
         growth = "down", -- "up"
         enabled = false,
+        showBar = true,
     },
     showOnlyInCombat = false,
     debug = false,

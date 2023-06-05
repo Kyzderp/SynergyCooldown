@@ -87,6 +87,17 @@ function SynCool.CreateSettingsMenu()
             width = "full",
         },
         {
+            type = "checkbox",
+            name = "Show progress bar",
+            tooltip = "Show a progress bar and synergy name on your own cooldowns",
+            default = true,
+            getFunc = function() return SynCool.savedOptions.display.showBar end,
+            setFunc = function(value)
+                SynCool.savedOptions.display.showBar = value
+            end,
+            width = "full",
+        },
+        {
             type = "dropdown",
             name = "Growth direction",
             tooltip = "When multiple synergy cooldowns are active, should the next one go up or down?",
@@ -119,8 +130,19 @@ function SynCool.CreateSettingsMenu()
             width = "full",
         },
         {
+            type = "checkbox",
+            name = "Show progress bar",
+            tooltip = "Show a progress bar and player name on other players' cooldowns",
+            default = true,
+            getFunc = function() return SynCool.savedOptions.othersDisplay.showBar end,
+            setFunc = function(value)
+                SynCool.savedOptions.othersDisplay.showBar = value
+            end,
+            width = "full",
+        },
+        {
             type = "dropdown",
-            name = "Other players growth direction",
+            name = "Growth direction",
             tooltip = "When multiple synergy cooldowns are active for other players, should the next one go up or down?",
             choices = {"up", "down"},
             default = "down",
