@@ -249,7 +249,9 @@ end
 -------------------------------------------------------------------------------
 -- When a synergy is activated, add it to the display
 local function OnSynergyActivated(name)
-    -- SynCool.dbg("Activated " .. name)
+    if (not SynCool.savedOptions.display.enabled) then
+        return
+    end
 
     local index = FindOrCreateControl(name)
     freeControls[index] = {name = name, expireTime = GetGameTimeMilliseconds() + 20000}

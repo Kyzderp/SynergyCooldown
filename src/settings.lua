@@ -76,6 +76,17 @@ function SynCool.CreateSettingsMenu()
             width = "full",
         },
         {
+            type = "checkbox",
+            name = "Show your own cooldowns",
+            tooltip = "Show your own synergy cooldowns",
+            default = true,
+            getFunc = function() return SynCool.savedOptions.display.enabled end,
+            setFunc = function(value)
+                SynCool.savedOptions.display.enabled = value
+            end,
+            width = "full",
+        },
+        {
             type = "dropdown",
             name = "Growth direction",
             tooltip = "When multiple synergy cooldowns are active, should the next one go up or down?",
@@ -98,7 +109,7 @@ function SynCool.CreateSettingsMenu()
         },
         {
             type = "checkbox",
-            name = "Show other players",
+            name = "Show other players' cooldowns",
             tooltip = "Show synergy cooldowns for group members",
             default = false,
             getFunc = function() return SynCool.savedOptions.othersDisplay.enabled end,

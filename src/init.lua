@@ -8,6 +8,7 @@ local defaultOptions = {
         x = GuiRoot:GetWidth() / 5,
         y = 0,
         growth = "down", -- "up"
+        enabled = true,
     },
     othersDisplay = {
         x = GuiRoot:GetWidth() * 2 / 5,
