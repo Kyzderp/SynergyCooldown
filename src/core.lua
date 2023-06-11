@@ -130,6 +130,10 @@ SynCool.SYNERGIES = {
         ids = {191080},
         texture = "esoui/art/icons/ability_arcanist_004.dds",
     },
+    ["Passage"] = {
+        ids = {190646},
+        texture = "esoui/art/icons/ability_arcanist_016_b.dds",
+    },
 }
 
 

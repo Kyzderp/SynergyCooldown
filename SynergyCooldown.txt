@@ -1,6 +1,6 @@
 ## Title: SynergyCooldown
 ## Author: Kyzeragon
-## Version: 0.4.0
+## Version: 0.5.0
 ## APIVersion: 101038
 ## DependsOn: LibAddonMenu-2.0>=31
 
