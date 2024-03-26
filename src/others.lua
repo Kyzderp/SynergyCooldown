@@ -86,7 +86,8 @@ local function UpdateDisplay()
             newControl:GetNamedChild("Icon"):SetTexture(origControl:GetNamedChild("Icon"):GetTextureFileName())
             newControl:GetNamedChild("Label"):SetText(origControl:GetNamedChild("Label"):GetText())
             newControl:GetNamedChild("Timer"):SetText(origControl:GetNamedChild("Timer"):GetText())
-            newControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
+            local min, max = origControl:GetNamedChild("Bar"):GetMinMax()
+            newControl:GetNamedChild("Bar"):SetMinMax(min, max)
             newControl:GetNamedChild("Bar"):SetValue(origControl:GetNamedChild("Bar"):GetValue())
             newControl:SetHidden(false)
             local barHidden = not SynCool.savedOptions.othersDisplay.showBar
@@ -169,15 +170,17 @@ local function OnSynergyActivated(name, target, unitTag, bypass)
         end
     end
 
+    local data = SynCool.SYNERGIES[name]
+
     local index = FindOrCreateControl(name)
-    freeControls[index] = {name = name, expireTime = GetGameTimeMilliseconds() + 20000}
+    freeControls[index] = {name = name, expireTime = GetGameTimeMilliseconds() + data.cooldown}
 
     local lineControl = SynCoolOthers:GetNamedChild("Line" .. tostring(index))
     lineControl:GetNamedChild("Icon"):SetTexture(SynCool.SYNERGIES[name].texture)
     lineControl:GetNamedChild("Label"):SetText(target)
-    lineControl:GetNamedChild("Timer"):SetText("20.0")
-    lineControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
-    lineControl:GetNamedChild("Bar"):SetValue(20000)
+    lineControl:GetNamedChild("Timer"):SetText(string.format("%.1f", data.cooldown / 1000))
+    lineControl:GetNamedChild("Bar"):SetMinMax(0, data.cooldown)
+    lineControl:GetNamedChild("Bar"):SetValue(data.cooldown)
     lineControl:SetHidden(false)
     local barHidden = not SynCool.savedOptions.othersDisplay.showBar
     lineControl:GetNamedChild("Label"):SetHidden(barHidden)

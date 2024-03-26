@@ -19,21 +19,25 @@ SynCool.SYNERGIES = {
             -- 95042, -- Healing Combustion (Energy) if stamina is higher
         },
         texture = "esoui/art/icons/ability_undaunted_004.dds",
+        cooldown = 20000,
     },
     ["Conduit"] = {
         -- ids = {108607},
         ids = {43769},
         texture = "esoui/art/icons/ability_sorcerer_liquid_lightning.dds",
+        cooldown = 20000,
     },
     ["Ritual"] = {
         -- ids = {108824},
         ids = {22270},
         texture = "esoui/art/icons/ability_templar_extended_ritual.dds",
+        cooldown = 20000,
     },
     ["Healing Seed"] = {
         -- ids = {108826},
         ids = {85576},
         texture = "esoui/art/icons/ability_warden_007.dds",
+        cooldown = 20000,
     },
     ["Bone Shield"] = {
         -- ids = {108794, 108797},
@@ -42,6 +46,7 @@ SynCool.SYNERGIES = {
             42196, -- Spinal Surge (Bone Surge)
         },
         texture = "esoui/art/icons/ability_undaunted_005b.dds",
+        cooldown = 20000,
     },
     ["Blood Altar"] = {
         -- ids = {108782, 108787},
@@ -50,6 +55,7 @@ SynCool.SYNERGIES = {
             41965, -- Blood Feast (Overflowing Altar)
         },
         texture = "esoui/art/icons/ability_undaunted_001_b.dds",
+        cooldown = 20000,
     },
     ["Spooder"] = {
         -- ids = {108788, 108791, 108792},
@@ -59,25 +65,30 @@ SynCool.SYNERGIES = {
             42019, -- Arachnophobia (Tangling Web)
         },
         texture = "esoui/art/icons/ability_undaunted_003_b.dds",
+        cooldown = 20000,
     },
     ["Radiate"] = {
         -- ids = {108793},
         ids = {41840},
         texture = "esoui/art/icons/ability_undaunted_002_b.dds",
+        cooldown = 20000,
     },
     ["Charged Lightning"] = {
         ids = {48085}, -- Unchanged with SoF
         texture = "esoui/art/icons/ability_sorcerer_storm_atronach.dds",
+        cooldown = 20000,
     },
     ["Shackle"] = {
         -- ids = {108805},
         ids = {67717},
         texture = "esoui/art/icons/ability_dragonknight_006.dds",
+        cooldown = 20000,
     },
     ["Ignite"] = {
         -- ids = {108807},
         ids = {48040},
         texture = "esoui/art/icons/ability_dragonknight_010.dds",
+        cooldown = 20000,
     },
     ["Nova"] = {
         -- ids = {108822, 108823},
@@ -86,53 +97,71 @@ SynCool.SYNERGIES = {
             48939, -- Supernova
         },
         texture = "esoui/art/icons/ability_templar_solar_disturbance.dds",
+        cooldown = 20000,
     },
     ["Hidden Refresh"] = {
         -- ids = {108808},
         ids = {37729},
         texture = "esoui/art/icons/ability_nightblade_015.dds",
+        cooldown = 20000,
     },
     ["Soul Leech"] = {
         -- ids = {108814},
         ids = {25172},
         texture = "esoui/art/icons/ability_nightblade_018.dds",
+        cooldown = 20000,
     },
     ["Grave Robber"] = {
         -- ids = {125219},
         ids = {115567},
         texture = "esoui/art/icons/ability_necromancer_004.dds",
+        cooldown = 20000,
     },
     ["Pure Agony"] = {
         -- ids = {125220},
         ids = {118610},
         texture = "esoui/art/icons/ability_necromancer_010_b.dds",
+        cooldown = 20000,
     },
     ["Feeding Frenzy"] = {
         -- ids = {58775},
         ids = {58813},
         texture = "esoui/art/icons/ability_werewolf_005_b.dds",
+        cooldown = 20000,
     },
     ["Lady Thorn"] = {
         -- ids = {142318},
         ids = {141971},
         texture = "esoui/art/icons/ability_u23_bloodball_chokeonit.dds",
+        cooldown = 20000,
     },
     ["Icy Escape"] = {
         ids = {88892}, -- Unchanged with SoF
         texture = "esoui/art/icons/ability_warden_005_b.dds",
+        cooldown = 20000,
     },
     ["Gryphon's Reprisal"] = {
         -- ids = {167046},
         ids = {167042},
         texture = "esoui/art/icons/achievement_trial_cr_flavor_3.dds",
+        cooldown = 20000,
     },
     ["Runebreak"] = {
         ids = {191080},
         texture = "esoui/art/icons/ability_arcanist_004.dds",
+        cooldown = 20000,
     },
     ["Passage"] = {
         ids = {190646},
         texture = "esoui/art/icons/ability_arcanist_016_b.dds",
+        cooldown = 20000,
+    },
+
+    -- Bedlam Veil final boss special synergies, seem to be 40s cd
+    ["Magical Protection"] = {
+        ids = {207924, 208016, 208283},
+        texture = "esoui/art/icons/u41_dun2_ability_lane.dds",
+        cooldown = 40000,
     },
 }
 
@@ -204,7 +233,8 @@ local function UpdateDisplay()
             newControl:GetNamedChild("Icon"):SetTexture(origControl:GetNamedChild("Icon"):GetTextureFileName())
             newControl:GetNamedChild("Label"):SetText(origControl:GetNamedChild("Label"):GetText())
             newControl:GetNamedChild("Timer"):SetText(origControl:GetNamedChild("Timer"):GetText())
-            newControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
+            local min, max = origControl:GetNamedChild("Bar"):GetMinMax()
+            newControl:GetNamedChild("Bar"):SetMinMax(min, max)
             newControl:GetNamedChild("Bar"):SetValue(origControl:GetNamedChild("Bar"):GetValue())
             newControl:SetHidden(false)
             local barHidden = not SynCool.savedOptions.display.showBar
@@ -264,15 +294,17 @@ local function OnSynergyActivated(name)
         return
     end
 
+    local data = SynCool.SYNERGIES[name]
+
     local index = FindOrCreateControl(name)
-    freeControls[index] = {name = name, expireTime = GetGameTimeMilliseconds() + 20000}
+    freeControls[index] = {name = name, expireTime = GetGameTimeMilliseconds() + data.cooldown}
 
     local lineControl = SynCoolContainer:GetNamedChild("Line" .. tostring(index))
-    lineControl:GetNamedChild("Icon"):SetTexture(SynCool.SYNERGIES[name].texture)
+    lineControl:GetNamedChild("Icon"):SetTexture(data.texture)
     lineControl:GetNamedChild("Label"):SetText(name)
-    lineControl:GetNamedChild("Timer"):SetText("20.0")
-    lineControl:GetNamedChild("Bar"):SetMinMax(0, 20000)
-    lineControl:GetNamedChild("Bar"):SetValue(20000)
+    lineControl:GetNamedChild("Timer"):SetText(string.format("%.1f", data.cooldown / 1000))
+    lineControl:GetNamedChild("Bar"):SetMinMax(0, data.cooldown)
+    lineControl:GetNamedChild("Bar"):SetValue(data.cooldown)
     lineControl:SetHidden(false)
     local barHidden = not SynCool.savedOptions.display.showBar
     lineControl:GetNamedChild("Label"):SetHidden(barHidden)
