@@ -129,6 +129,8 @@ local function FindOrCreateControl(name)
         SynCoolOthers,                          -- parent
         "SynCool_Line_Template",                -- template
         "")                                     -- suffix
+    lineControl:GetNamedChild("Label"):SetFont(SynCool.GetStyles().labelFont)
+    lineControl:GetNamedChild("Timer"):SetFont(SynCool.GetStyles().timerFont)
 
     if (SynCool.savedOptions.othersDisplay.growth == "up") then
         lineControl:SetAnchor(CENTER, SynCoolOthers, CENTER, 0, -44 * (index - 1))
@@ -219,7 +221,4 @@ function SynCool:InitializeOthers()
             EVENT_MANAGER:AddFilterForEvent(SynCool.name .. "Others" .. tostring(id), EVENT_COMBAT_EVENT, REGISTER_FILTER_ABILITY_ID, id)
         end
     end
-
-    -- Register changing zones or raid starting
-
 end

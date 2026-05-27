@@ -276,6 +276,8 @@ local function FindOrCreateControl(name)
         SynCoolContainer,                       -- parent
         "SynCool_Line_Template",                -- template
         "")                                     -- suffix
+    lineControl:GetNamedChild("Label"):SetFont(SynCool.GetStyles().labelFont)
+    lineControl:GetNamedChild("Timer"):SetFont(SynCool.GetStyles().timerFont)
 
     if (SynCool.savedOptions.display.growth == "up") then
         lineControl:SetAnchor(CENTER, SynCoolContainer, CENTER, 0, -44 * (index - 1))

@@ -29,7 +29,7 @@ SynCool.messages = {}
 function SynCool.dbg(msg)
     if (not SynCool.savedOptions.debug) then return end
     if (not msg) then return end
-    if (CHAT_SYSTEM.primaryContainer) then
+    if (CHAT_ROUTER) then
         d("|c66FF66[SC]|r " .. tostring(msg))
     else
         SynCool.messages[#SynCool.messages + 1] = msg
@@ -115,6 +115,7 @@ local function Initialize()
         SynCool.Watch(arg)
     end
 
+    SynCool.InitializeStyles()
     SynCool:InitializeCore()
     EVENT_MANAGER:RegisterForEvent(SynCool.name, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
     EVENT_MANAGER:RegisterForEvent(SynCool.name .. "CombatState", EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
