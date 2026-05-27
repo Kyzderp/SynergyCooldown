@@ -96,6 +96,7 @@ function SynCool.CreateSettingsMenu()
                 SynCool.savedOptions.display.showBar = value
             end,
             width = "full",
+            disabled = function() return not SynCool.savedOptions.display.enabled end,
         },
         {
             type = "dropdown",
@@ -111,6 +112,7 @@ function SynCool.CreateSettingsMenu()
                 SynCool.ReAnchor()
             end,
             width = "full",
+            disabled = function() return not SynCool.savedOptions.display.enabled end,
         },
         {
             type = "description",
@@ -139,6 +141,7 @@ function SynCool.CreateSettingsMenu()
                 SynCool.savedOptions.othersDisplay.showBar = value
             end,
             width = "full",
+            disabled = function() return not SynCool.savedOptions.othersDisplay.enabled end,
         },
         {
             type = "dropdown",
@@ -154,8 +157,80 @@ function SynCool.CreateSettingsMenu()
                 SynCool.ReAnchor()
             end,
             width = "full",
+            disabled = function() return not SynCool.savedOptions.othersDisplay.enabled end,
         },
     }
+
+    if (ZO_IsConsoleOrGameCoreUI()) then
+        local function UpdateAnchors()
+            SynCoolContainer:SetAnchor(CENTER, GuiRoot, CENTER, SynCool.savedOptions.display.x, SynCool.savedOptions.display.y)
+            SynCoolOthers:SetAnchor(CENTER, GuiRoot, CENTER, SynCool.savedOptions.othersDisplay.x, SynCool.savedOptions.othersDisplay.y)
+            SynCool.Test()
+        end
+
+        table.insert(optionsData, 10, {
+            type = "slider",
+            name = "Position X",
+            tooltip = "The horizontal position of your cooldowns",
+            min = - GuiRoot:GetWidth() / 2,
+            max = GuiRoot:GetWidth() / 2,
+            step = GuiRoot:GetWidth() / 64,
+            default = GuiRoot:GetWidth() / 5,
+            getFunc = function() return SynCool.savedOptions.display.x end,
+            setFunc = function(value)
+                SynCool.savedOptions.display.x = value
+                UpdateAnchors()
+            end,
+            disabled = function() return not SynCool.savedOptions.display.enabled end,
+        })
+        table.insert(optionsData, 11, {
+            type = "slider",
+            name = "Position Y",
+            tooltip = "The vertical position of your cooldowns",
+            min = - GuiRoot:GetHeight() / 2,
+            max = GuiRoot:GetHeight() / 2,
+            step = GuiRoot:GetHeight() / 64,
+            default = 0,
+            getFunc = function() return SynCool.savedOptions.display.y end,
+            setFunc = function(value)
+                SynCool.savedOptions.display.y = value
+                UpdateAnchors()
+            end,
+            disabled = function() return not SynCool.savedOptions.display.enabled end,
+        })
+        table.insert(optionsData, {
+            type = "slider",
+            name = "Position X",
+            tooltip = "The horizontal position of other players' cooldowns",
+            min = - GuiRoot:GetWidth() / 2,
+            max = GuiRoot:GetWidth() / 2,
+            step = GuiRoot:GetWidth() / 64,
+            default = GuiRoot:GetWidth() / 5,
+            getFunc = function() return SynCool.savedOptions.othersDisplay.x end,
+            setFunc = function(value)
+                SynCool.savedOptions.othersDisplay.x = value
+                UpdateAnchors()
+            end,
+            disabled = function() return not SynCool.savedOptions.othersDisplay.enabled end,
+        })
+        table.insert(optionsData, {
+            type = "slider",
+            name = "Position Y",
+            tooltip = "The vertical position of other players' cooldowns",
+            min = - GuiRoot:GetHeight() / 2,
+            max = GuiRoot:GetHeight() / 2,
+            step = GuiRoot:GetHeight() / 64,
+            default = 0,
+            getFunc = function() return SynCool.savedOptions.othersDisplay.y end,
+            setFunc = function(value)
+                SynCool.savedOptions.othersDisplay.y = value
+                UpdateAnchors()
+            end,
+            disabled = function() return not SynCool.savedOptions.othersDisplay.enabled end,
+        })
+
+        table.remove(optionsData, 3)
+    end
 
     SynCool.addonPanel = LAM:RegisterAddonPanel("SynergyCooldownOptions", panelData)
     LAM:RegisterOptionControls("SynergyCooldownOptions", optionsData)

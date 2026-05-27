@@ -7,8 +7,8 @@
 ## Title: SynergyCooldown
 ## Description: Displays only cooldowns for synergies you have activated.
 ## Author: Kyzeragon
-## Version: 0.6.0
-## AddOnVersion: 600
+## Version: 2.0.0
+## AddOnVersion: 20000
 ## APIVersion: 101049
 ## DependsOn: LibAddonMenu-2.0>=43
 
