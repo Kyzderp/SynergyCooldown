@@ -1,4 +1,3 @@
-SynergyCooldown = SynergyCooldown or {}
 local SynCool = SynergyCooldown
 
 -- unitId to unitTag, when to clear this? on player activated?
@@ -140,6 +139,19 @@ local function FindOrCreateControl(name)
 
     return index
 end
+
+
+-------------------------------------------------------------------------------
+local function ApplyStyles()
+    local styles = SynCool.GetStyles()
+
+    for i, _ in pairs(freeControls) do
+        local lineControl = SynCoolContainer:GetNamedChild("Line" .. i)
+        lineControl:GetNamedChild("Label"):SetFont(styles.labelFont)
+        lineControl:GetNamedChild("Timer"):SetFont(styles.timerFont)
+    end
+end
+SynCool.ApplyStylesOthers = ApplyStyles
 
 
 -------------------------------------------------------------------------------

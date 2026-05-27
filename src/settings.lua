@@ -1,4 +1,3 @@
-SynergyCooldown = SynergyCooldown or {}
 local SynCool = SynergyCooldown
 
 

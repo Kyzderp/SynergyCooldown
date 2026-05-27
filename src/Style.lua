@@ -19,7 +19,8 @@ local GAMEPAD_STYLE = {
 local activeStyles = GAMEPAD_STYLE
 local function ApplyStyle(style)
     activeStyles = style
-    -- TODO
+    SynCool.ApplyStyles()
+    SynCool.ApplyStylesOthers()
 end
 
 local function GetStyles()

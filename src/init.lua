@@ -1,7 +1,8 @@
-SynergyCooldown = SynergyCooldown or {}
+SynergyCooldown = {
+    name = "SynergyCooldown",
+    version = "2.0.0",
+}
 local SynCool = SynergyCooldown
-SynCool.name = "SynergyCooldown"
-SynCool.version = "2.0.0"
 
 local defaultOptions = {
     display = {

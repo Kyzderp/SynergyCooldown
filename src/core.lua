@@ -1,4 +1,3 @@
-SynergyCooldown = SynergyCooldown or {}
 local SynCool = SynergyCooldown
 
 SynCool.SYNERGIES = {
@@ -174,7 +173,7 @@ local freeControls = {}
 -------------------------------------------------------------------------------
 -- Reanchor all controls, used when growth direction changes
 function SynCool.ReAnchor()
-    for i, data in pairs(freeControls) do
+    for i, _ in pairs(freeControls) do
         local lineControl = SynCoolContainer:GetNamedChild("Line" .. tostring(i))
 
         if (SynCool.savedOptions.display.growth == "up") then
@@ -287,6 +286,19 @@ local function FindOrCreateControl(name)
 
     return index
 end
+
+
+-------------------------------------------------------------------------------
+local function ApplyStyles()
+    local styles = SynCool.GetStyles()
+
+    for i, _ in pairs(freeControls) do
+        local lineControl = SynCoolContainer:GetNamedChild("Line" .. i)
+        lineControl:GetNamedChild("Label"):SetFont(styles.labelFont)
+        lineControl:GetNamedChild("Timer"):SetFont(styles.timerFont)
+    end
+end
+SynCool.ApplyStyles = ApplyStyles
 
 
 -------------------------------------------------------------------------------
