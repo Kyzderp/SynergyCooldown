@@ -3,13 +3,13 @@ local SynCool = SynergyCooldown
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 local KEYBOARD_STYLE = {
-    labelFont = "$(BOLD_FONT)|$(KB_14)|soft-shadow-thick",
-    timerFont = "$(BOLD_FONT)|$(KB_14)|outline",
+    labelFont = "$(BOLD_FONT)|14|soft-shadow-thick",
+    timerFont = "$(BOLD_FONT)|14|outline",
 }
 
 local GAMEPAD_STYLE = {
-    labelFont = "$(GAMEPAD_BOLD_FONT)|$(GP_14)|soft-shadow-thick",
-    timerFont = "$(GAMEPAD_BOLD_FONT)|$(GP_14)|outline",
+    labelFont = "$(GAMEPAD_BOLD_FONT)|14|soft-shadow-thick",
+    timerFont = "$(GAMEPAD_BOLD_FONT)|14|outline",
 }
 
 

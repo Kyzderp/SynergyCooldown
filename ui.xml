@@ -10,22 +10,22 @@
                     <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER"/>
                 </Texture>
                 <Backdrop name="$(parent)Backdrop" centerColor="FF000000" edgeColor="FF222222" hidden="false" tier="LOW"> <AnchorFill/> <Edge edgeSize="2"/> </Backdrop>
-                <Label name="$(parent)Label" font="$(BOLD_FONT)|$(KB_14)|soft-shadow-thick" color="FFFFFF" text="Sanguine Burst" verticalAlignment="BOTTOM" horizontalAlignment="LEFT" hidden="false">
-                    <Dimensions x="600" y="36"/>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$(parent)Backdrop" relativePoint="RIGHT" offsetX="8"/>
-                </Label>
-                <Label name="$(parent)Timer" font="$(BOLD_FONT)|$(KB_14)|outline" color="FFFFFF" text="20.0" verticalAlignment="BOTTOM" horizontalAlignment="CENTER" hidden="false" tier="HIGH">
+                <Label name="$(parent)Timer" color="FFFFFF" text="20.0" verticalAlignment="BOTTOM" horizontalAlignment="CENTER" hidden="false" tier="HIGH">
                     <Dimensions x="32" y="32"/>
                     <Anchor point="CENTER" relativeTo="$(parent)Icon" relativePoint="CENTER"/>
                 </Label>
                 <StatusBar name="$(parent)Bar" hidden="false" inherits="ZO_ArrowStatusBarWithBG">
                     <Dimensions x="120"/>
-                    <Anchor point="TOPLEFT" relativeTo="$(parent)Backdrop" relativePoint="RIGHT" offsetX="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$(parent)Backdrop" relativePoint="BOTTOMRIGHT" offsetX="4"/>
                     <OnInitialized>
                         ZO_StatusBar_SetGradientColor(self, ZO_XP_BAR_GRADIENT_COLORS)
                         self.gloss = self:GetNamedChild("Gloss")
                     </OnInitialized>
                 </StatusBar>
+                <Label name="$(parent)Label" color="FFFFFF" text="Sanguine Burst" verticalAlignment="BOTTOM" horizontalAlignment="LEFT" hidden="false">
+                    <Dimensions x="600" y="36"/>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$(parent)Bar" relativePoint="TOPLEFT" offsetY="-1"/>
+                </Label>
             </Controls>
         </Control>
 
